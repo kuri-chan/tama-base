@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
+import UserPhotoUpload from '@/components/UserPhotoUpload'
 
 // 公園の特徴からビジュアルスタイルを決定
 function getParkStyle(park: { equipment?: string[] | null; age_range?: string | null; has_shade?: boolean }) {
@@ -169,6 +170,15 @@ export default async function ParkDetailPage({ params }: { params: Promise<{ id:
           className={`block w-full text-center bg-gradient-to-r ${style.gradient} text-white py-4 rounded-2xl font-bold text-sm hover:opacity-90 transition-opacity shadow-md`}>
           📍 Google Mapsで経路を確認
         </a>
+
+        {/* ユーザー写真投稿 */}
+        <div className="mt-4">
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">みんなの写真</p>
+          <UserPhotoUpload targetType="park" targetId={park.id} targetName={park.name} />
+        </div>
+
+        {/* ボトムナビ分の余白 */}
+        <div className="pb-4" />
       </div>
     </div>
   )

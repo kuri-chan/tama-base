@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
+import UserPhotoUpload from '@/components/UserPhotoUpload'
 
 const CATEGORY_STYLE: Record<string, { gradient: string; icon: string; textColor: string }> = {
   カフェ:    { gradient: 'from-amber-500 via-orange-400 to-yellow-400',   icon: '☕', textColor: 'text-amber-900' },
@@ -159,6 +160,15 @@ export default async function ShopDetailPage({ params }: { params: Promise<{ id:
           className={`block w-full text-center bg-gradient-to-r ${style.gradient} text-white py-4 rounded-2xl font-bold text-sm hover:opacity-90 transition-opacity shadow-md`}>
           📍 Google Mapsで経路を確認
         </a>
+
+        {/* ユーザー写真投稿 */}
+        <div className="mt-4">
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">みんなの写真</p>
+          <UserPhotoUpload targetType="shop" targetId={shop.id} targetName={shop.name} />
+        </div>
+
+        {/* ボトムナビ分の余白 */}
+        <div className="pb-4" />
       </div>
     </div>
   )

@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 import { Park } from '@/types'
 
@@ -9,72 +10,64 @@ export default async function ParksPage() {
     .from('parks').select('*').order('created_at', { ascending: false })
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
+    <div className="pb-24">
 
-      {/* ヘッダー */}
-      <div className="mb-5">
-        <h1 className="text-2xl font-black text-gray-900">🏞️ 公園一覧</h1>
-        <p className="text-sm text-gray-500 mt-1">{parks?.length ?? 0}件の公園</p>
+      {/* Header */}
+      <div className="bg-white/95 backdrop-blur border-b border-gray-100 sticky top-0 z-10 px-4 pt-4 pb-3">
+        <div className="max-w-4xl mx-auto flex items-baseline justify-between">
+          <h1 className="text-xl font-black text-gray-900">公園</h1>
+          <span className="text-sm text-gray-400 tabular-nums">{parks?.length ?? 0}件</span>
+        </div>
       </div>
 
-      {/* 簡易フィルター（表示のみ） */}
-      <div className="flex gap-2 mb-6 flex-wrap">
-        <span className="bg-white border border-gray-200 text-gray-600 text-sm px-3 py-1.5 rounded-full">🚻 トイレあり</span>
-        <span className="bg-white border border-gray-200 text-gray-600 text-sm px-3 py-1.5 rounded-full">🅿️ 駐車場あり</span>
-        <span className="bg-white border border-gray-200 text-gray-600 text-sm px-3 py-1.5 rounded-full">🌳 日陰あり</span>
-        <span className="bg-white border border-gray-200 text-gray-600 text-sm px-3 py-1.5 rounded-full">🪑 ベンチあり</span>
-      </div>
-
-      {/* 公園リスト */}
-      {parks && parks.length > 0 ? (
-        <div className="flex flex-col gap-3">
-          {parks.map((park: Park) => (
-            <Link key={park.id} href={`/parks/${park.id}`}
-              className="bg-white border border-gray-200 rounded-2xl p-4 hover:shadow-md transition-all hover:border-green-200">
-
-              <div className="flex items-start justify-between mb-2">
-                <div className="flex-1 min-w-0 pr-3">
-                  <div className="font-bold text-gray-900 mb-0.5">{park.name}</div>
-                  <div className="text-gray-400 text-xs">{park.address}</div>
-                </div>
-                <div className="flex flex-col items-end gap-1 shrink-0">
+      {/* Grid */}
+      <div className="max-w-4xl mx-auto px-4 pt-4">
+        {parks && parks.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {parks.map((park: Park) => (
+              <Link key={park.id} href={`/parks/${park.id}`}
+                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group border border-gray-100/80">
+                <div className="relative aspect-[3/2]">
+                  {park.images?.[0] ? (
+                    <Image src={park.images[0]} alt={park.name} fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 640px) 50vw, 33vw" />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
+                      <span className="text-5xl drop-shadow">🌳</span>
+                    </div>
+                  )}
                   {park.age_range && (
-                    <span className="bg-green-50 text-green-700 text-xs px-2.5 py-1 rounded-full font-medium">
+                    <span className="absolute bottom-2 left-2 bg-black/40 text-white text-[10px] px-2 py-0.5 rounded-full backdrop-blur-sm">
                       {park.age_range}
                     </span>
                   )}
-                  <span className="text-gray-300 text-xl">›</span>
                 </div>
-              </div>
-
-              {/* 施設 */}
-              <div className="flex flex-wrap gap-3 text-xs text-gray-500 mb-2">
-                {park.has_toilet && <span className="flex items-center gap-0.5">🚻 トイレ</span>}
-                {park.has_parking && <span className="flex items-center gap-0.5">🅿️ 駐車場</span>}
-                {park.has_bench && <span className="flex items-center gap-0.5">🪑 ベンチ</span>}
-                {park.has_shade && <span className="flex items-center gap-0.5">🌳 日陰</span>}
-              </div>
-
-              {/* 遊具 */}
-              {park.equipment && park.equipment.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {park.equipment.map((item: string) => (
-                    <span key={item}
-                      className="bg-yellow-50 text-yellow-700 text-xs px-2.5 py-1 rounded-full border border-yellow-100">
-                      {item}
-                    </span>
-                  ))}
+                <div className="p-3">
+                  <div className="font-bold text-sm text-gray-900 line-clamp-1 mb-1">{park.name}</div>
+                  <div className="flex flex-wrap gap-2 text-[10px] text-gray-400 mb-1">
+                    {park.has_toilet && <span>🚻 トイレ</span>}
+                    {park.has_parking && <span>🅿️ 駐車場</span>}
+                    {park.has_bench && <span>🪑 ベンチ</span>}
+                    {park.has_shade && <span>🌳 日陰</span>}
+                  </div>
+                  {park.equipment && park.equipment.length > 0 && (
+                    <div className="text-[10px] text-gray-400 line-clamp-1">
+                      {park.equipment.slice(0, 3).join(' · ')}
+                      {park.equipment.length > 3 && ` +${park.equipment.length - 3}`}
+                    </div>
+                  )}
                 </div>
-              )}
-            </Link>
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-20">
-          <div className="text-5xl mb-4">🌱</div>
-          <p className="text-gray-500 font-medium">公園情報を準備中です</p>
-        </div>
-      )}
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-24">
+            <div className="text-4xl mb-3">🌱</div>
+            <p className="text-gray-500 font-medium text-sm">公園情報を準備中です</p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

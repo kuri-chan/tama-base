@@ -35,7 +35,10 @@ export default async function AdminPage() {
             {[...(shops || []), ...(parks || [])].filter(x => x.images?.length > 0).length}
             <span className="text-base font-normal ml-1">件</span>
           </p>
-          <p className="text-xs text-purple-500 mt-3">各行の「編集」から写真を追加</p>
+          <Link href="/admin/photos"
+            className="mt-3 block text-center bg-purple-600 text-white py-2 rounded-xl text-sm font-medium hover:bg-purple-700">
+            📸 投稿写真を確認
+          </Link>
         </div>
       </div>
 

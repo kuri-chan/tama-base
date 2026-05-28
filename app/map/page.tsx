@@ -18,7 +18,7 @@ export default function MapPage() {
   }, [])
 
   return (
-    <div className="flex flex-col" style={{ height: 'calc(100vh - 56px)' }}>
+    <div className="flex flex-col" style={{ height: 'calc(100vh - 64px)' }}>
       {/* フィルター */}
       <div className="bg-white border-b px-4 py-2 flex gap-3">
         <button

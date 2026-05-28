@@ -1,12 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
+import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import PWAInstaller from "@/components/PWAInstaller";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const noto = Noto_Sans_JP({
   subsets: ["latin"],
+  weight: ["400", "500", "700", "900"],
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -42,10 +44,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={`${geistSans.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-gray-50">
-        <Navbar />
+    <html lang="ja" className={noto.className}>
+      <body className="min-h-dvh flex flex-col bg-[#F7F7F4] antialiased">
         <main className="flex-1">{children}</main>
+        <Navbar />
         <PWAInstaller />
       </body>
     </html>
