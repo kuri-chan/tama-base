@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
+import Image from 'next/image'
 import { notFound } from 'next/navigation'
 
 const CATEGORY_STYLE: Record<string, { gradient: string; icon: string; textColor: string }> = {
@@ -46,6 +47,31 @@ export default async function ShopDetailPage({ params }: { params: Promise<{ id:
 
       {/* コンテンツ */}
       <div className="px-4 -mt-4">
+
+        {/* 写真ギャラリー */}
+        {shop.images && shop.images.length > 0 && (
+          <div className="mb-4">
+            {shop.images.length === 1 ? (
+              <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-md">
+                <Image src={shop.images[0]} alt={shop.name} fill className="object-cover" sizes="(max-width: 672px) 100vw, 672px" />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-md">
+                  <Image src={shop.images[0]} alt={`${shop.name} メイン写真`} fill className="object-cover" sizes="(max-width: 672px) 100vw, 672px" />
+                </div>
+                <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${Math.min(shop.images.length - 1, 4)}, 1fr)` }}>
+                  {shop.images.slice(1, 5).map((url: string, i: number) => (
+                    <div key={url} className="relative aspect-square rounded-xl overflow-hidden shadow-sm">
+                      <Image src={url} alt={`${shop.name} 写真${i + 2}`} fill className="object-cover" sizes="150px" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="bg-white rounded-2xl shadow-md p-5 mb-4">
 
           {/* 基本情報 */}
