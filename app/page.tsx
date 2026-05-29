@@ -5,7 +5,6 @@ import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 import { Shop, Park } from '@/types'
 import CategoryVisual from '@/components/CategoryVisual'
-import HeroScenery from '@/components/HeroScenery'
 
 const CATEGORIES = [
   { label: 'カフェ', icon: '☕', value: 'カフェ', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
@@ -140,9 +139,12 @@ export default async function HomePage() {
     <div className="pb-24">
 
       {/* ===== HERO ===== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-green-800 via-green-700 to-emerald-600 text-white px-4 pt-10 pb-20">
-        {/* 多摩川をイメージした風景イラスト */}
-        <HeroScenery className="absolute inset-x-0 bottom-0 w-full h-56 pointer-events-none" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-green-800 via-green-700 to-emerald-600 text-white px-4 pt-10 pb-12">
+        {/* 多摩川をイメージした河川風景（背景写真） */}
+        <Image src="/hero-river.jpg" alt="" fill priority sizes="100vw"
+          className="object-cover object-center" />
+        {/* 可読性のためのオーバーレイ */}
+        <div className="absolute inset-0 bg-gradient-to-b from-green-950/85 via-green-900/60 to-green-950/55" />
         <div className="relative z-10 max-w-4xl mx-auto">
           <div className="mb-6">
             <p className="text-green-300 text-[10px] font-medium tracking-[0.2em] uppercase mb-2">
