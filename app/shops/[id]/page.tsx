@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import UserPhotoUpload from '@/components/UserPhotoUpload'
+import FavoriteButton from '@/components/FavoriteButton'
 
 const CATEGORY_STYLE: Record<string, { gradient: string; icon: string; textColor: string }> = {
   カフェ:    { gradient: 'from-amber-500 via-orange-400 to-yellow-400',   icon: '☕', textColor: 'text-amber-900' },
@@ -152,14 +153,17 @@ export default async function ShopDetailPage({ params }: { params: Promise<{ id:
           </div>
         )}
 
-        {/* Google Maps */}
-        <a
-          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(shop.name + ' ' + shop.address)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`block w-full text-center bg-gradient-to-r ${style.gradient} text-white py-4 rounded-2xl font-bold text-sm hover:opacity-90 transition-opacity shadow-md`}>
-          📍 Google Mapsで経路を確認
-        </a>
+        {/* アクション */}
+        <div className="flex gap-2.5">
+          <FavoriteButton type="shop" id={shop.id} />
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(shop.name + ' ' + shop.address)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`flex-1 flex items-center justify-center text-center bg-gradient-to-r ${style.gradient} text-white py-4 rounded-2xl font-bold text-sm hover:opacity-90 transition-opacity shadow-md`}>
+            📍 Google Mapsで経路を確認
+          </a>
+        </div>
 
         {/* ユーザー写真投稿 */}
         <div className="mt-4">

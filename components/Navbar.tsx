@@ -42,11 +42,22 @@ function MapIcon({ active }: { active: boolean }) {
   )
 }
 
+function HeartIcon({ active }: { active: boolean }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+      fill={active ? 'currentColor' : 'none'} stroke="currentColor"
+      strokeWidth={active ? 2 : 1.8} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+      <path d="M19.5 12.572 12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.566Z" />
+    </svg>
+  )
+}
+
 const TABS = [
   { href: '/', label: 'ホーム', exact: true, Icon: HomeIcon },
   { href: '/shops', label: 'お店', exact: false, Icon: ShopIcon },
   { href: '/parks', label: '公園', exact: false, Icon: ParkIcon },
   { href: '/map', label: 'マップ', exact: false, Icon: MapIcon },
+  { href: '/favorites', label: '保存', exact: false, Icon: HeartIcon },
 ]
 
 export default function Navbar() {
