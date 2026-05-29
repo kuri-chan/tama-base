@@ -33,7 +33,10 @@ function iconPath(category: string): JSX.Element {
     case 'スイーツ':
       return (
         <>
-          <path d="M5 21h14M6 21l1-7h10l1 7M8 14a4 4 0 0 1 8 0M12 6.5V10M12 6.5a1.5 1.5 0 1 0-1.5-1.5" />
+          {/* ソフトクリーム：コーン＋2段のスクープ */}
+          <path d="M8 11h8l-4 10-4-10Z" />
+          <path d="M8.2 11a3.8 3.8 0 0 1 7.6 0" />
+          <path d="M9.3 7.8a2.7 2.7 0 0 1 5.4 0" />
         </>
       )
     case '小売':
