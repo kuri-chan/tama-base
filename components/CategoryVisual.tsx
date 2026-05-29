@@ -79,6 +79,27 @@ function iconPath(category: string): JSX.Element {
   }
 }
 
+// アイコン単体（ヒーローなどで再利用）
+export function CategoryGlyph({
+  category,
+  className = '',
+  strokeWidth = 1.3,
+}: { category: string; className?: string; strokeWidth?: number }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      {iconPath(category)}
+    </svg>
+  )
+}
+
 interface Props {
   category: string   // 'カフェ' | ... | '公園'
   name?: string

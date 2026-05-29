@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import UserPhotoUpload from '@/components/UserPhotoUpload'
 import FavoriteButton from '@/components/FavoriteButton'
+import { CategoryGlyph } from '@/components/CategoryVisual'
 
 const CATEGORY_STYLE: Record<string, { gradient: string; icon: string; textColor: string }> = {
   カフェ:    { gradient: 'from-amber-500 via-orange-400 to-yellow-400',   icon: '☕', textColor: 'text-amber-900' },
@@ -23,25 +24,44 @@ export default async function ShopDetailPage({ params }: { params: Promise<{ id:
   if (!shop) notFound()
 
   const style = CATEGORY_STYLE[shop.category] || DEFAULT_STYLE
+  const heroPhoto = shop.images?.[0] || null
+  const restPhotos: string[] = (shop.images || []).slice(1, 5)
 
   return (
     <div className="max-w-2xl mx-auto pb-10">
 
       {/* ビジュアルヘッダー */}
-      <div className={`bg-gradient-to-br ${style.gradient} pt-12 pb-8 px-4 relative`}>
+      <div className="relative px-4 pt-12 pb-9 min-h-[210px] flex flex-col justify-end overflow-hidden">
+        {heroPhoto ? (
+          <>
+            <Image src={heroPhoto} alt={shop.name} fill priority
+              className="object-cover" sizes="(max-width:672px) 100vw, 672px" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/20" />
+          </>
+        ) : (
+          <>
+            <div className={`absolute inset-0 bg-gradient-to-br ${style.gradient}`} />
+            <CategoryGlyph category={shop.category} strokeWidth={1}
+              className="absolute -right-8 -bottom-10 w-56 h-56 text-white/20" />
+          </>
+        )}
+
         <Link href="/shops"
-          className="absolute top-4 left-4 bg-white/20 text-white text-sm px-3 py-1.5 rounded-full hover:bg-white/30 transition-colors">
+          className="absolute top-4 left-4 z-10 bg-black/25 backdrop-blur-sm text-white text-sm px-3 py-1.5 rounded-full hover:bg-black/40 transition-colors">
           ← 一覧に戻る
         </Link>
         {shop.is_new_open && (
-          <span className="absolute top-4 right-4 bg-white text-red-600 text-xs font-black px-3 py-1.5 rounded-full shadow-md">
+          <span className="absolute top-4 right-4 z-10 bg-white text-red-600 text-xs font-black px-3 py-1.5 rounded-full shadow-md">
             NEW OPEN
           </span>
         )}
-        <div className="text-center">
-          <div className="text-6xl mb-3 drop-shadow-lg">{style.icon}</div>
-          <div className="text-white/80 text-sm font-medium mb-2">{shop.category}</div>
-          <h1 className="text-white text-2xl font-black leading-tight drop-shadow-md px-4">
+
+        <div className="relative z-10">
+          {!heroPhoto && (
+            <CategoryGlyph category={shop.category} strokeWidth={1.6} className="w-9 h-9 text-white/90 mb-2" />
+          )}
+          <div className="text-white/85 text-sm font-medium mb-1">{shop.category}</div>
+          <h1 className="text-white text-2xl font-black leading-tight drop-shadow-md">
             {shop.name}
           </h1>
         </div>
@@ -50,27 +70,14 @@ export default async function ShopDetailPage({ params }: { params: Promise<{ id:
       {/* コンテンツ */}
       <div className="px-4 -mt-4">
 
-        {/* 写真ギャラリー */}
-        {shop.images && shop.images.length > 0 && (
-          <div className="mb-4">
-            {shop.images.length === 1 ? (
-              <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-md">
-                <Image src={shop.images[0]} alt={shop.name} fill className="object-cover" sizes="(max-width: 672px) 100vw, 672px" />
+        {/* サブ写真ギャラリー（ヒーロー以外の写真） */}
+        {restPhotos.length > 0 && (
+          <div className="grid gap-2 mb-4" style={{ gridTemplateColumns: `repeat(${Math.min(restPhotos.length, 4)}, 1fr)` }}>
+            {restPhotos.map((url: string, i: number) => (
+              <div key={url} className="relative aspect-square rounded-xl overflow-hidden shadow-sm">
+                <Image src={url} alt={`${shop.name} 写真${i + 2}`} fill className="object-cover" sizes="150px" />
               </div>
-            ) : (
-              <div className="space-y-2">
-                <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-md">
-                  <Image src={shop.images[0]} alt={`${shop.name} メイン写真`} fill className="object-cover" sizes="(max-width: 672px) 100vw, 672px" />
-                </div>
-                <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${Math.min(shop.images.length - 1, 4)}, 1fr)` }}>
-                  {shop.images.slice(1, 5).map((url: string, i: number) => (
-                    <div key={url} className="relative aspect-square rounded-xl overflow-hidden shadow-sm">
-                      <Image src={url} alt={`${shop.name} 写真${i + 2}`} fill className="object-cover" sizes="150px" />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            ))}
           </div>
         )}
 
