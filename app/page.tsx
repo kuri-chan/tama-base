@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 import { Shop, Park } from '@/types'
+import CategoryVisual from '@/components/CategoryVisual'
 
 const CATEGORIES = [
   { label: 'カフェ', icon: '☕', value: 'カフェ', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
@@ -31,8 +32,6 @@ export const CATEGORY_ICON: Record<string, string> = {
 }
 
 function ShopCard({ shop }: { shop: Shop }) {
-  const gradient = CATEGORY_GRADIENT[shop.category] || 'from-gray-300 to-gray-400'
-  const icon = CATEGORY_ICON[shop.category] || '🏪'
   return (
     <Link href={`/shops/${shop.id}`}
       className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group border border-gray-100/80">
@@ -41,11 +40,9 @@ function ShopCard({ shop }: { shop: Shop }) {
           <Image src={shop.images[0]} alt={shop.name} fill
             className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="220px" />
         ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-            <span className="text-4xl drop-shadow">{icon}</span>
-          </div>
+          <CategoryVisual category={shop.category} name={shop.name} />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
+        {shop.images?.[0] && <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />}
         {shop.is_new_open && (
           <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold tracking-wide">
             NEW
@@ -80,9 +77,7 @@ function ParkCard({ park }: { park: Park }) {
           <Image src={park.images[0]} alt={park.name} fill
             className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="220px" />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
-            <span className="text-5xl drop-shadow">🌳</span>
-          </div>
+          <CategoryVisual category="公園" name={park.name} />
         )}
         {park.age_range && (
           <span className="absolute bottom-2 left-2 bg-black/40 text-white text-[10px] px-2 py-0.5 rounded-full backdrop-blur-sm">
@@ -213,37 +208,31 @@ export default async function HomePage() {
             />
           </div>
           <div className="flex gap-3 overflow-x-auto px-4 pb-3 scrollbar-hide snap-x snap-mandatory">
-            {newShops.map((shop: Shop) => {
-              const gradient = CATEGORY_GRADIENT[shop.category] || 'from-gray-300 to-gray-400'
-              const icon = CATEGORY_ICON[shop.category] || '🏪'
-              return (
-                <Link key={shop.id} href={`/shops/${shop.id}`}
-                  className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow shrink-0 w-44 snap-start border border-gray-100/80">
-                  <div className="relative aspect-[4/3]">
-                    {shop.images?.[0] ? (
-                      <Image src={shop.images[0]} alt={shop.name} fill className="object-cover" sizes="176px" />
-                    ) : (
-                      <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-                        <span className="text-4xl drop-shadow">{icon}</span>
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                    <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
-                      NEW
+            {newShops.map((shop: Shop) => (
+              <Link key={shop.id} href={`/shops/${shop.id}`}
+                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow shrink-0 w-44 snap-start border border-gray-100/80">
+                <div className="relative aspect-[4/3]">
+                  {shop.images?.[0] ? (
+                    <Image src={shop.images[0]} alt={shop.name} fill className="object-cover" sizes="176px" />
+                  ) : (
+                    <CategoryVisual category={shop.category} name={shop.name} />
+                  )}
+                  {shop.images?.[0] && <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />}
+                  <span className="absolute top-2 right-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold shadow-sm">
+                    NEW
+                  </span>
+                  {shop.child_friendly && (
+                    <span className="absolute bottom-2 right-2 bg-white/90 text-[10px] text-blue-600 font-bold px-1.5 py-0.5 rounded-full shadow-sm">
+                      子連れOK
                     </span>
-                    {shop.child_friendly && (
-                      <span className="absolute top-2 right-2 bg-white/85 text-xs w-5 h-5 rounded-full flex items-center justify-center shadow-sm">
-                        👶
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-2.5">
-                    <div className="font-bold text-xs text-gray-900 line-clamp-2 leading-snug mb-0.5">{shop.name}</div>
-                    <div className="text-[10px] text-gray-400">{shop.category}</div>
-                  </div>
-                </Link>
-              )
-            })}
+                  )}
+                </div>
+                <div className="p-2.5">
+                  <div className="font-bold text-xs text-gray-900 line-clamp-2 leading-snug mb-0.5">{shop.name}</div>
+                  <div className="text-[10px] text-gray-400">{shop.category}</div>
+                </div>
+              </Link>
+            ))}
           </div>
         </section>
       )}

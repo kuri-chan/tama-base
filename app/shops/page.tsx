@@ -4,22 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 import { Shop } from '@/types'
-
-const CATEGORY_GRADIENT: Record<string, string> = {
-  カフェ: 'from-amber-400 to-orange-400',
-  飲食: 'from-red-400 to-orange-400',
-  スイーツ: 'from-pink-400 to-fuchsia-400',
-  小売: 'from-blue-400 to-sky-400',
-  美容: 'from-purple-400 to-violet-400',
-  サービス: 'from-indigo-400 to-blue-400',
-  医療: 'from-teal-400 to-emerald-400',
-  その他: 'from-gray-400 to-slate-400',
-}
-
-const CATEGORY_ICON: Record<string, string> = {
-  カフェ: '☕', 飲食: '🍽️', スイーツ: '🍰', 小売: '🛍️',
-  美容: '✂️', サービス: '🔧', 医療: '🏥', その他: '📍',
-}
+import CategoryVisual from '@/components/CategoryVisual'
 
 const FILTER_CHIPS = [
   { href: '/shops', label: 'すべて', color: 'green' },
@@ -94,44 +79,38 @@ export default async function ShopsPage({
       <div className="max-w-4xl mx-auto px-4 pt-4">
         {shops && shops.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {shops.map((shop: Shop) => {
-              const gradient = CATEGORY_GRADIENT[shop.category] || 'from-gray-300 to-gray-400'
-              const icon = CATEGORY_ICON[shop.category] || '🏪'
-              return (
-                <Link key={shop.id} href={`/shops/${shop.id}`}
-                  className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group border border-gray-100/80">
-                  <div className="relative aspect-[3/2]">
-                    {shop.images?.[0] ? (
-                      <Image src={shop.images[0]} alt={shop.name} fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        sizes="(max-width: 640px) 50vw, 33vw" />
-                    ) : (
-                      <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-                        <span className="text-4xl drop-shadow">{icon}</span>
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                    {shop.is_new_open && (
-                      <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
-                        NEW
-                      </span>
-                    )}
+            {shops.map((shop: Shop) => (
+              <Link key={shop.id} href={`/shops/${shop.id}`}
+                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group border border-gray-100/80">
+                <div className="relative aspect-[3/2]">
+                  {shop.images?.[0] ? (
+                    <Image src={shop.images[0]} alt={shop.name} fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 640px) 50vw, 33vw" />
+                  ) : (
+                    <CategoryVisual category={shop.category} name={shop.name} />
+                  )}
+                  {shop.images?.[0] && <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />}
+                  {shop.is_new_open && (
+                    <span className="absolute top-2 right-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold shadow-sm">
+                      NEW
+                    </span>
+                  )}
+                </div>
+                <div className="p-3">
+                  <div className="font-bold text-sm text-gray-900 line-clamp-1">{shop.name}</div>
+                  <div className="text-[11px] text-gray-400 mt-0.5">{shop.category}</div>
+                  <div className="flex flex-wrap gap-1 mt-1.5">
                     {shop.child_friendly && (
-                      <span className="absolute top-2 right-2 bg-white/85 text-xs w-5 h-5 rounded-full flex items-center justify-center shadow-sm">
-                        👶
-                      </span>
+                      <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full font-medium">子連れOK</span>
+                    )}
+                    {shop.stroller_ok && (
+                      <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full font-medium">BC可</span>
                     )}
                   </div>
-                  <div className="p-3">
-                    <div className="font-bold text-sm text-gray-900 line-clamp-1">{shop.name}</div>
-                    <div className="text-[11px] text-gray-400 mt-0.5">{shop.category}</div>
-                    {shop.hours && (
-                      <div className="text-[10px] text-gray-400 mt-1">🕐 {shop.hours}</div>
-                    )}
-                  </div>
-                </Link>
-              )
-            })}
+                </div>
+              </Link>
+            ))}
           </div>
         ) : (
           <div className="text-center py-24">
